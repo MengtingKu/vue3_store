@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第二週 - RESTful API 串接(產品列表)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container my-3">
+            <div class="row py-3">
+                <div class="col-md-6">
+                    <h2>產品列表</h2>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col" width="23%">產品名稱</th>
+                                <th scope="col" width="18%">原價</th>
+                                <th scope="col" width="18%">售價</th>
+                                <th scope="col" width="23%">是否啟用</th>
+                                <th scope="col" width="18%">查看細節</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider table-striped">
+                            <tr v-for="(product, index) in products" :key="product.id">
+                                <td>{{ product.title }}</td>
+                                <td>{{ product.origin_price }}</td>
+                                <td>{{ product.price }}</td>
+                                <td>
+                                    <span class="text-success" v-if="product.is_enabled > 0">啟用</span>
+                                    <span v-else>未啟用</span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-primary"
+                                        @click="showProductDetail(product)">查看細節</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>目前有 <strong>{{ Object.keys(products).length }}</strong> 項產品</p>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex justify-content-md-between align-items-md-start">
+                        <h2>單一產品細節</h2>
+                        <button type="button" class="btn btn-outline-primary" @click="singout(username)">登出</button>
+                    </div>
+
+                    <template v-if="productDetail.title">
+                        <div class="card mb-3">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <img :src="productDetail.imageUrl" class="img-fluid rounded-start"
+                                        :alt="productDetail.title" aria-label="product">
+                                </div>
+                                <div class="col-md-8 d-flex flex-column justify-content-between">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start">
+                                            <h5 class="card-title">{{ productDetail.title }}</h5>
+                                            <span class="badge rounded-pill text-bg-primary ms-4">{{
+                                                productDetail.category }}</span>
+                                        </div>
+
+                                        <p class="card-text">商品描述：{{ productDetail.description }}</p>
+                                        <p class="card-text">商品內容：{{ productDetail.content }}</p>
+                                        <p class="card-text">售價：{{ productDetail.price }} <span
+                                                class="text-decoration-line-through text-secondary">{{
+                                                productDetail.origin_price }} </span> {{ productDetail.unit }} / 元</p>
+                                    </div>
+                                    <!-- <div class="card-footer bg-transparent border-0">
+                                        <p class="card-text text-end"><small class="text-muted">剩下 <strong>{{
+                                                    productDetail.num }} </strong> {{ productDetail.unit }}</small></p>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active" data-bs-interval="800">
+                                    <img :src="productDetail.imagesUrl[0]" class="d-block w-50"
+                                        :alt="productDetail.title">
+                                </div>
+                                <div class="carousel-item" data-bs-interval="1300">
+                                    <img :src="productDetail.imagesUrl[1]" class="d-block w-50"
+                                        :alt="productDetail.title">
+                                </div>
+
+                            </div>
+                            <button class="carousel-control-prev" type="button"
+                                data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button"
+                                data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </template>
+                    <p class="text-secondary" v-else>請選擇一個商品查看</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+    <script src="js/productList.js" type="module"></script>
+</body>
+
+</html>
